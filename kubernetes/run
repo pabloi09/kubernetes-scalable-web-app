@@ -15,10 +15,6 @@ kubectl delete crd prometheuses.monitoring.coreos.com
 kubectl delete crd alertmanagers.monitoring.coreos.com
 kubectl delete crd podmonitors.monitoring.coreos.com
 
-sudo docker build -t pabloi09/webserver ./webserver/
-sudo docker push pabloi09/webserver
-sudo docker build -t pabloi09/booter ./booter/
-sudo docker push pabloi09/booter
 helm repo add elastic https://helm.elastic.co
 helm repo add kiwigrid https://kiwigrid.github.io
 

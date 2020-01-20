@@ -54,6 +54,8 @@ services:
     build: ./haproxy
     expose:
       - 3000
+    ports:
+      - 80:3000
     networks:
       LAN2:
         ipv4_address: 20.20.2.3
@@ -66,8 +68,6 @@ services:
     privileged: true
     expose:
       - 3000
-    ports:
-      - 80:3000
     networks:
       LAN1:
         ipv4_address: 20.20.1.2
