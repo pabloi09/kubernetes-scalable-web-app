@@ -1,0 +1,3 @@
+gcloud services enable container.googleapis.com
+gcloud container clusters create scalable-web-app-cluster --enable-autoupgrade --enable-autoscaling --min-nodes=3 --max-nodes=10 --num-nodes=5 --zone=us-central1-a
+gcloud auth configure-docker -q

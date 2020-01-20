@@ -1,0 +1,1 @@
+kubectl port-forward svc/kibana-kibana 5601

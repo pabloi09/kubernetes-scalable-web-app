@@ -1,0 +1,158 @@
+version: '3'
+ 
+services:
+  s1:
+    container_name: s1
+    build: ./webapp/s1
+    privileged: true
+    expose:
+      - 3000
+    depends_on:
+      - mariadb
+      - nas1
+      - s2
+      - s3
+    networks:
+      LAN3:
+        ipv4_address: 20.20.3.11
+      LAN4:
+        ipv4_address: 20.20.4.11
+  
+  s2:
+    container_name: s2
+    build: ./webapp/s2
+    privileged: true
+    expose:
+      - 3000
+    depends_on:
+      - mariadb
+      - nas1
+      - s3
+    networks:
+      LAN3:
+        ipv4_address: 20.20.3.12
+      LAN4:
+        ipv4_address: 20.20.4.12
+  
+  s3:
+    container_name: s3
+    build: ./webapp/s3
+    privileged: true
+    expose:
+      - 3000
+    depends_on:
+      - mariadb
+      - nas1
+    networks:
+      LAN3:
+        ipv4_address: 20.20.3.13
+      LAN4:
+        ipv4_address: 20.20.4.13
+
+  lb:
+    container_name: lb
+    build: ./haproxy
+    expose:
+      - 3000
+    networks:
+      LAN2:
+        ipv4_address: 20.20.2.3
+      LAN3:
+        ipv4_address: 20.20.3.2
+
+  firewall:
+    container_name: firewall
+    build: ./firewall/
+    privileged: true
+    expose:
+      - 3000
+    ports:
+      - 80:3000
+    networks:
+      LAN1:
+        ipv4_address: 20.20.1.2
+      LAN2:
+        ipv4_address: 20.20.2.2
+
+  c1:
+    container_name: c1
+    build: ./hosts
+    networks:
+        LAN1:
+          ipv4_address: 20.20.1.11
+
+  c2:
+    container_name: c2
+    build: ./hosts
+    networks:
+        LAN1:
+          ipv4_address: 20.20.1.12
+
+  host:
+    container_name: host
+    build: ./hosts
+    networks:
+        LAN1:
+          ipv4_address: 20.20.1.3
+  
+  mariadb:
+    container_name: mariadb
+    build: ./mariaDB
+    expose:
+      - 3306
+    networks:
+      LAN4:
+        ipv4_address: 20.20.4.31
+
+  nas1:
+    container_name: nas1
+    build: ./glusterfs/nas1
+    privileged: true
+    depends_on:
+      - nas2
+      - nas3
+    networks:
+      LAN4:
+        ipv4_address: 20.20.4.21
+  
+  nas2:
+    container_name: nas2
+    build: ./glusterfs/nas2
+    privileged: true
+    networks:
+      LAN4:
+        ipv4_address: 20.20.4.22
+
+  nas3:
+    container_name: nas3
+    build: ./glusterfs/nas3
+    privileged: true
+    networks:
+      LAN4:
+        ipv4_address: 20.20.4.23
+        
+networks:
+  LAN1:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 20.20.1.0/24
+  LAN2:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 20.20.2.0/24
+  LAN3:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 20.20.3.0/24
+  LAN4:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 20.20.4.0/24

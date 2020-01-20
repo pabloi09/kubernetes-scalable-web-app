@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: nfs-server
+spec:
+  selector:
+    matchLabels:
+      app: nfs-server
+  namespaceSelector:
+    matchNames:
+    - default
+  endpoints:
+  - port: nfs
+    interval: 30s
+  - port: mountd
+    interval: 30s
+  - port: rpcbind
+    interval: 30s
+   

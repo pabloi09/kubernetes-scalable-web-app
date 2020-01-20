@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: booter-deployment
+spec:
+  template:
+    metadata:
+      labels:
+        app: booter
+    spec:
+      containers:
+      - name: webserver
+        image: docker.io/pabloi09/booter
+        securityContext:
+          privileged: true
+      restartPolicy: Never
+

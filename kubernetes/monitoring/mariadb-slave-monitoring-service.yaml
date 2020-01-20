@@ -1,0 +1,14 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: mariadb-slave
+spec:
+  selector:
+    matchLabels:
+      app: mariadb-slave
+  namespaceSelector:
+    matchNames:
+    - default
+  endpoints:
+  - targetPort: 3306
+    interval: 30s

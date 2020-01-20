@@ -1,0 +1,28 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: webserver-deployment
+spec:
+  replicas: 4
+  template:
+    metadata:
+      labels:
+        app: webserver
+    spec:
+      containers:
+      - name: webserver
+        image: docker.io/pabloi09/webserver
+        securityContext:
+          privileged: true
+        ports:
+        - name: nodejs-port
+          containerPort: 3000
+        volumeMounts:
+        - mountPath: /quiz_2020/public/uploads
+          name: nfs
+      volumes:
+      - name: nfs
+        persistentVolumeClaim:
+          claimName: nfs-slave
+
+          

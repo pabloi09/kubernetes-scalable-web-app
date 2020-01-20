@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: webserver-service
+spec:
+  selector:
+    matchLabels:
+      app: webserver-service
+  namespaceSelector:
+    matchNames:
+    - default
+  endpoints:
+  - port: web
+    interval: 30s
+  

@@ -1,0 +1,5 @@
+FROM gluster/gluster-centos
+
+
+
+

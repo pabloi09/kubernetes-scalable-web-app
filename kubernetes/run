@@ -1,0 +1,54 @@
+kubectl get all --all-namespaces | grep tiller
+kubectl delete deployment tiller-deploy -n kube-system
+kubectl delete service tiller-deploy -n kube-system
+kubectl get all --all-namespaces | grep tiller
+helm init
+kubectl create serviceaccount --namespace kube-system tiller
+kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
+kubectl patch deploy --namespace kube-system tiller-deploy -p '{"spec":{"template":{"spec":{"serviceAccount":"tiller"}}}}'
+sleep 10
+
+kubectl delete crd prometheusrules.monitoring.coreos.com
+kubectl delete crd servicemonitors.monitoring.coreos.com
+kubectl delete crd alertmanagers.monitoring.coreos.com
+kubectl delete crd prometheuses.monitoring.coreos.com
+kubectl delete crd alertmanagers.monitoring.coreos.com
+kubectl delete crd podmonitors.monitoring.coreos.com
+
+sudo docker build -t pabloi09/webserver ./webserver/
+sudo docker push pabloi09/webserver
+sudo docker build -t pabloi09/booter ./booter/
+sudo docker push pabloi09/booter
+helm repo add elastic https://helm.elastic.co
+helm repo add kiwigrid https://kiwigrid.github.io
+
+helm ls --all --short | xargs -L1 helm delete --purge
+
+kubectl patch pvc nfs -p '{"metadata":{"finalizers": []}}' --type=merge
+kubectl patch pvc nfs-slave -p '{"metadata":{"finalizers": []}}' --type=merge
+kubectl patch pvc data-mariadb-master-0 -p '{"metadata":{"finalizers": []}}' --type=merge
+kubectl patch pvc data-mariadb-slave-0 -p '{"metadata":{"finalizers": []}}' --type=merge
+kubectl patch pvc data-mariadb-slave-1 -p '{"metadata":{"finalizers": []}}' --type=merge
+kubectl patch pvc data-mariadb-slave-2 -p '{"metadata":{"finalizers": []}}' --type=merge
+
+kubectl delete deployments --all --grace-period=0 --force
+
+kubectl delete -f ./booter/,./monitoring/,./nfs,./webserver --all --grace-period=0 --force
+kubectl delete pods --all --grace-period=0 --force
+kubectl delete services --all --grace-period=0 --force
+kubectl delete pvc --all --grace-period=0 --force
+
+
+helm install --name mariadb stable/mariadb -f values-production.yaml --set rootUser.password=xxxx --set replication.password=xxxx
+helm install --name prometheus stable/prometheus-operator --name prometheus-operator --namespace monitoring
+helm upgrade --install --values elasticsearch-values.yml elasticsearch elastic/elasticsearch
+helm upgrade --install kibana elastic/kibana
+helm upgrade --install --values fluentd-values.yml fluentd kiwigrid/fluentd-elasticsearch
+kubectl apply -f ./booter/,./monitoring/,./nfs,./webserver
+
+
+
+
+
+
+
